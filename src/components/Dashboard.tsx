@@ -7,11 +7,9 @@ import { api } from "@/lib/apiClient";
 import { IMPORT_MAX_LABEL, IMPORT_TYPES_PROSE } from "@/lib/limits";
 import type { DocumentSummary } from "@/lib/types";
 import UploadButton from "./UploadButton";
+import LocalTime from "./LocalTime";
 import RoleBadge from "./RoleBadge";
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
-}
 
 export default function Dashboard({
   owned: ownedFromServer,
@@ -108,7 +106,7 @@ export default function Dashboard({
         empty={q ? `No documents match "${query.trim()}".` : "No documents yet. Create one or import a file to get started."}
       >
         {owned.map((d) => (
-          <DocRow key={d.id} doc={d} subtitle={`Edited ${formatDate(d.updatedAt)}`}>
+          <DocRow key={d.id} doc={d} subtitle={<>Edited <LocalTime iso={d.updatedAt} /></>}>
             {d.shareCount > 0 ? (
               <span
                 className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 whitespace-nowrap"
@@ -140,7 +138,7 @@ export default function Dashboard({
         empty={q ? `No shared documents match "${query.trim()}".` : "Nothing has been shared with you yet."}
       >
         {sharedVisible.map((d) => (
-          <DocRow key={d.id} doc={d} subtitle={`Owned by ${d.ownerName} · Edited ${formatDate(d.updatedAt)}`}>
+          <DocRow key={d.id} doc={d} subtitle={<>Owned by {d.ownerName} · Edited <LocalTime iso={d.updatedAt} /></>}>
             <RoleBadge role={d.role} />
           </DocRow>
         ))}
@@ -164,7 +162,7 @@ function Section({ title, count, empty, children }: { title: string; count: numb
   );
 }
 
-function DocRow({ doc, subtitle, children }: { doc: DocumentSummary; subtitle: string; children: React.ReactNode }) {
+function DocRow({ doc, subtitle, children }: { doc: DocumentSummary; subtitle: React.ReactNode; children: React.ReactNode }) {
   return (
     <li className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50">
       <span aria-hidden className="text-blue-600 text-lg">▤</span>

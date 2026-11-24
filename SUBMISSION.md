@@ -1,7 +1,7 @@
 # Submission — Ajaia Docs
 
 **Candidate:** Ganeshkumar Boini
-**Live URL:** _LIVE_URL_
+**Live URL:** https://ajaiadocs-olive.vercel.app
 **Walkthrough video:** _VIDEO_URL_ (also in `docs/VIDEO_URL.txt`)
 
 ## Test accounts (no password — pick on the sign-in screen)

@@ -2,7 +2,7 @@
 
 A lightweight collaborative document editor: create, format, import, share, and reopen rich-text documents.
 
-**Live demo:** _LIVE_URL_ — sign in as any seeded user (no password).
+**Live demo:** https://ajaiadocs-olive.vercel.app — sign in as any seeded user (no password).
 
 | Seeded user | Email | Starts with |
 |---|---|---|

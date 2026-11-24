@@ -39,6 +39,7 @@ The AI's first complete version worked, but it had gaps that only surfaced becau
 - **.docx fidelity:** the first test file lost headings and lists, and the converter dropped underline. Fixed with an underline mapping and a properly styled fixture, plus a test that asserts headings, both list types, and underline survive.
 - **Mobile toolbar:** a screenshot at phone width showed the toolbar wrapping badly. The layout was reworked and the tiny undo/redo glyphs were replaced with icons.
 - **Stale dashboard:** pressing the browser's Back button after editing showed old titles. The dashboard now refreshes, and the walkthrough checks it.
+- **Timezone hydration error (found only in production):** running the walkthrough against the live site surfaced React hydration errors that never appeared locally. Vercel's servers run in UTC, so "Edited …" timestamps rendered differently on the server and in the browser. Reproduced locally by forcing the server to UTC; fixed by formatting timestamps in the browser after hydration (`LocalTime.tsx`); verified with zero errors.
 - **Markdown export** duplicated the title as an extra heading, so that was removed.
 - **Dependency conflict:** npm resolved a Vitest version incompatible with the scaffold, so it was pinned rather than forcing peer dependencies.
 
@@ -68,4 +69,7 @@ The reasoning is in `ARCHITECTURE.md`.
 
    I reviewed the screenshots myself rather than relying only on "tests passed".
 5. **Failure testing:** ran the app against an unreachable database to confirm users see a friendly error screen, never a raw crash.
-6. **Live deployment:** _LIVE_CHECK_
+6. **Live deployment** (`https://ajaiadocs-olive.vercel.app`, Turso database):
+   - The same API smoke test passed: auth, permissions, sanitization, imports, and errors.
+   - The browser walkthroughs passed on the deployed site. This surfaced the timezone hydration error above, which was fixed and re-verified.
+   - Test documents were deleted afterwards, so reviewers start from the seeded state.
