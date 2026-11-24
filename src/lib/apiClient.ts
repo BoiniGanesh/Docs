@@ -23,7 +23,12 @@ export async function api<T>(url: string, init: RequestInit & { json?: unknown }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     if (res.status === 401 && typeof window !== "undefined") window.location.href = "/login";
-    throw new ApiError(data.error ?? `Request failed (${res.status})`, res.status);
+    // Responses without our { error } body (e.g. a hosting timeout page) still get a readable message.
+    const fallback =
+      res.status >= 500
+        ? "The server had a problem. Please try again in a moment."
+        : `Something went wrong (error ${res.status}). Please try again.`;
+    throw new ApiError(data.error ?? fallback, res.status);
   }
   return data as T;
 }

@@ -31,7 +31,8 @@ Folders separate what runs where: `src/server/` is server-only (DB, sessions, bu
 
 - **Authorization lives in one place.** Every service function takes the acting `userId`, loads the document *joined with that user's share row*, resolves a role (`owner | editor | viewer | null`) via `access.ts`, and enforces it. Routes can't forget a check, and the tests exercise the same code the API runs.
 - **No access → 404, not 403.** Non-collaborators can't tell whether a document exists. 403 is reserved for collaborators doing something their role doesn't allow (e.g. a viewer saving).
-- **Errors** are typed (`ValidationError`, `ForbiddenError`, …) and mapped to `{ error }` JSON + status in one wrapper (`http.ts`). The client surfaces those messages verbatim.
+- **Errors** are typed (`ValidationError`, `ForbiddenError`, …) and mapped to `{ error }` JSON + status in one wrapper (`http.ts`). Unexpected errors become a generic 500 message (details only in server logs), and unknown API paths return JSON 404s. The client surfaces these messages verbatim, with a readable fallback for non-JSON responses.
+- **No raw crash screens.** `app/error.tsx` (with a "Try again" that re-fetches), `app/global-error.tsx`, and friendly not-found pages (generic, plus a document-specific one) cover page-level failures. Tested by running the app against an unreachable database.
 
 ## Where to change things
 
