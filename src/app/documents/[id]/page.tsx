@@ -1,9 +1,9 @@
 import { notFound, redirect } from "next/navigation";
 import DocumentEditor from "@/components/DocumentEditor";
-import { getDb } from "@/lib/db";
-import { getDocument } from "@/lib/documents";
-import { NotFoundError } from "@/lib/errors";
-import { getCurrentUser } from "@/lib/session";
+import { getDb } from "@/server/db";
+import { getDocument } from "@/server/documents";
+import { NotFoundError } from "@/server/errors";
+import { getCurrentUser } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 

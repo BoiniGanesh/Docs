@@ -21,11 +21,13 @@ Ship a coherent, *reliable* document-collaboration slice in ~4 hours: the editin
 Browser ──fetch──▶ /api/* route handlers (thin: auth + parse + map errors)
                          │
                          ▼
-                 src/lib/documents.ts  ◀── all business rules + access checks
-                         │   uses access.ts (pure role → permission rules)
+                 src/server/documents.ts  ◀── all business rules + access checks
+                         │   uses src/lib/access.ts (pure role → permission rules)
                          ▼
-                 libSQL client (db.ts) ──▶ SQLite file | Turso
+                 libSQL client (src/server/db.ts) ──▶ SQLite file | Turso
 ```
+
+Folders separate what runs where: `src/server/` is server-only (DB, sessions, business rules), `src/lib/` is safe for both sides (permission rules, shared types, fetch client), `src/components/` + `src/hooks/` are browser UI.
 
 - **Authorization lives in one place.** Every service function takes the acting `userId`, loads the document *joined with that user's share row*, resolves a role (`owner | editor | viewer | null`) via `access.ts`, and enforces it. Routes can't forget a check, and the tests exercise the same code the API runs.
 - **No access → 404, not 403.** Non-collaborators can't tell whether a document exists. 403 is reserved for collaborators doing something their role doesn't allow (e.g. a viewer saving).

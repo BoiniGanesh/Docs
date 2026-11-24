@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api } from "@/lib/apiClient";
 import type { ShareRole } from "@/lib/access";
-import type { ShareEntry } from "@/lib/documents";
-import { Avatar } from "./LoginPicker";
+import type { ShareEntry } from "@/lib/types";
+import Avatar from "./Avatar";
 
 interface Props {
   docId: string;

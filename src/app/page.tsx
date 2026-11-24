@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import AppHeader from "@/components/AppHeader";
 import Dashboard from "@/components/Dashboard";
-import { getDb } from "@/lib/db";
-import { listDocuments } from "@/lib/documents";
-import { getCurrentUser } from "@/lib/session";
+import { getDb } from "@/server/db";
+import { listDocuments } from "@/server/documents";
+import { getCurrentUser } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +15,7 @@ export default async function HomePage() {
   return (
     <>
       <AppHeader user={user} />
-      <Dashboard initialOwned={docs.owned} initialShared={docs.shared} />
+      <Dashboard owned={docs.owned} shared={docs.shared} />
     </>
   );
 }

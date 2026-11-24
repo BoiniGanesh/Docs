@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getDb } from "@/lib/db";
-import { ValidationError } from "@/lib/errors";
-import { handle, readJson } from "@/lib/http";
-import { parse } from "@/lib/documents";
-import { SESSION_COOKIE, encodeSession, sessionCookieOptions } from "@/lib/session";
+import { getDb } from "@/server/db";
+import { ValidationError } from "@/server/errors";
+import { handle, readJson } from "@/server/http";
+import { parse } from "@/server/documents";
+import { SESSION_COOKIE, encodeSession, sessionCookieOptions } from "@/server/session";
 
 export const POST = handle(async (req) => {
   const { userId } = parse(z.object({ userId: z.string().min(1, "userId is required.") }), await readJson(req));

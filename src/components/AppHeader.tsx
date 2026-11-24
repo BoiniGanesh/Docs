@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { api } from "@/lib/api";
-import { Avatar } from "./LoginPicker";
+import { api } from "@/lib/apiClient";
+import Avatar from "./Avatar";
 
 export default function AppHeader({ user, children }: { user: { name: string; email: string }; children?: React.ReactNode }) {
   async function signOut() {

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
-import { createDocument } from "@/lib/documents";
-import { ValidationError } from "@/lib/errors";
-import { handle } from "@/lib/http";
-import { fileToHtml, titleFromFilename } from "@/lib/importFile";
-import { requireUser } from "@/lib/session";
+import { getDb } from "@/server/db";
+import { createDocument } from "@/server/documents";
+import { ValidationError } from "@/server/errors";
+import { handle } from "@/server/http";
+import { fileToHtml, titleFromFilename } from "@/server/importFile";
+import { requireUser } from "@/server/session";
 
 export const runtime = "nodejs";
 

@@ -6,13 +6,13 @@ import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import TurndownService from "turndown";
 import { useState } from "react";
-import type { DocumentDetail } from "@/lib/documents";
+import type { DocumentDetail } from "@/lib/types";
 import { canEdit, canShare } from "@/lib/access";
 import AppHeader from "./AppHeader";
 import RoleBadge from "./RoleBadge";
 import ShareDialog from "./ShareDialog";
 import Toolbar from "./Toolbar";
-import { useAutosave, type SaveStatus } from "./useAutosave";
+import { useAutosave, type SaveStatus } from "@/hooks/useAutosave";
 
 const STATUS_TEXT: Record<SaveStatus, string> = {
   saved: "All changes saved",

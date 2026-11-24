@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
-import type { DocumentSummary } from "@/lib/documents";
+import { api } from "@/lib/apiClient";
+import type { DocumentSummary } from "@/lib/types";
 import UploadButton from "./UploadButton";
 import RoleBadge from "./RoleBadge";
 
@@ -13,16 +13,21 @@ function formatDate(iso: string) {
 }
 
 export default function Dashboard({
-  initialOwned,
-  initialShared,
+  owned: ownedFromServer,
+  shared,
 }: {
-  initialOwned: DocumentSummary[];
-  initialShared: DocumentSummary[];
+  owned: DocumentSummary[];
+  shared: DocumentSummary[];
 }) {
   const router = useRouter();
-  const [owned, setOwned] = useState(initialOwned);
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const owned = ownedFromServer.filter((d) => !deletedIds.has(d.id));
+
+  // Browser Back restores this page from Next's client cache; re-fetch so
+  // titles and "edited" times reflect changes made in the editor.
+  useEffect(() => router.refresh(), [router]);
 
   async function createDoc() {
     setCreating(true);
@@ -39,12 +44,18 @@ export default function Dashboard({
   async function deleteDoc(doc: DocumentSummary) {
     if (!confirm(`Delete "${doc.title}"? This also removes access for everyone it's shared with.`)) return;
     setError(null);
-    const prev = owned;
-    setOwned((d) => d.filter((x) => x.id !== doc.id)); // optimistic
+    const hide = (on: boolean) =>
+      setDeletedIds((ids) => {
+        const next = new Set(ids);
+        if (on) next.add(doc.id);
+        else next.delete(doc.id);
+        return next;
+      });
+    hide(true); // optimistic
     try {
       await api(`/api/documents/${doc.id}`, { method: "DELETE" });
     } catch (e) {
-      setOwned(prev);
+      hide(false);
       setError((e as Error).message);
     }
   }
@@ -85,8 +96,8 @@ export default function Dashboard({
         ))}
       </Section>
 
-      <Section title="Shared with me" count={initialShared.length} empty="Nothing has been shared with you yet.">
-        {initialShared.map((d) => (
+      <Section title="Shared with me" count={shared.length} empty="Nothing has been shared with you yet.">
+        {shared.map((d) => (
           <DocRow key={d.id} doc={d} subtitle={`Owned by ${d.ownerName} · Edited ${formatDate(d.updatedAt)}`}>
             <RoleBadge role={d.role} />
           </DocRow>

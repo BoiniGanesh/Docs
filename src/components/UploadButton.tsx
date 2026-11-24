@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
+import { api } from "@/lib/apiClient";
 
 const ACCEPT = ".txt,.md,.docx";
 const MAX_BYTES = 2 * 1024 * 1024;

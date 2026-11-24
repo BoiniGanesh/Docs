@@ -3,7 +3,7 @@ import { marked } from "marked";
 import { PayloadTooLargeError, UnsupportedMediaError, ValidationError } from "./errors";
 import { sanitizeDocumentHtml } from "./sanitize";
 
-export const SUPPORTED_EXTENSIONS = [".txt", ".md", ".docx"] as const;
+const SUPPORTED_EXTENSIONS = [".txt", ".md", ".docx"] as const;
 export const MAX_UPLOAD_BYTES = 2 * 1024 * 1024; // 2 MB
 
 function extensionOf(filename: string): string {

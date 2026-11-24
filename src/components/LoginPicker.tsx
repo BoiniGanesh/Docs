@@ -1,15 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { api } from "@/lib/api";
+import { api } from "@/lib/apiClient";
+import type { UserInfo } from "@/lib/types";
+import Avatar from "./Avatar";
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
-export default function LoginPicker({ users }: { users: User[] }) {
+/** Mocked sign-in: one button per seeded account. */
+export default function LoginPicker({ users }: { users: UserInfo[] }) {
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,22 +41,5 @@ export default function LoginPicker({ users }: { users: User[] }) {
       ))}
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
-  );
-}
-
-export function Avatar({ name, size = "md" }: { name: string; size?: "sm" | "md" }) {
-  const initials = name
-    .split(" ")
-    .map((p) => p[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-  const colors = ["bg-blue-600", "bg-emerald-600", "bg-purple-600", "bg-amber-600", "bg-rose-600"];
-  const color = colors[name.charCodeAt(0) % colors.length];
-  const dims = size === "sm" ? "h-7 w-7 text-xs" : "h-9 w-9 text-sm";
-  return (
-    <span className={`inline-flex shrink-0 items-center justify-center rounded-full text-white font-semibold ${color} ${dims}`}>
-      {initials}
-    </span>
   );
 }

@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { initSchema } from "../src/lib/db";
+import { initSchema } from "../src/server/db";
 import {
   addShare,
   createDocument,
@@ -13,8 +13,8 @@ import {
   listShares,
   removeShare,
   updateDocument,
-} from "../src/lib/documents";
-import { ForbiddenError, NotFoundError, ValidationError } from "../src/lib/errors";
+} from "../src/server/documents";
+import { ForbiddenError, NotFoundError, ValidationError } from "../src/server/errors";
 
 const ALICE = "u_alice";
 const BOB = "u_bob";

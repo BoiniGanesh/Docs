@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { PayloadTooLargeError, UnsupportedMediaError, ValidationError } from "../src/lib/errors";
-import { MAX_UPLOAD_BYTES, fileToHtml, textToHtml, titleFromFilename } from "../src/lib/importFile";
+import { PayloadTooLargeError, UnsupportedMediaError, ValidationError } from "../src/server/errors";
+import { MAX_UPLOAD_BYTES, fileToHtml, textToHtml, titleFromFilename } from "../src/server/importFile";
 
 const buf = (s: string) => Buffer.from(s, "utf8");
 

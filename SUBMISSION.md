@@ -22,7 +22,7 @@
 
 | Path | Contents |
 |---|---|
-| `src/` | Next.js app: UI pages/components, API routes, service layer |
+| `src/` | Next.js app: `app/` routes & API, `components/` + `hooks/` UI, `lib/` shared, `server/` server-only logic |
 | `tests/` | Vitest suites (24 tests) |
 | `samples/` | Sample .md / .txt / .docx files for import |
 | `scripts/make-sample-docx.mjs` | Generates the styled .docx fixture |

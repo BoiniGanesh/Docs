@@ -1,7 +1,8 @@
 import type { Client, Row } from "@libsql/client";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { canDelete, canEdit, canShare, resolveRole, type Role, type ShareRole } from "./access";
+import { canDelete, canEdit, canShare, resolveRole, type Role, type ShareRole } from "@/lib/access";
+import type { DocumentDetail, DocumentSummary, ShareEntry } from "@/lib/types";
 import { ForbiddenError, NotFoundError, ValidationError } from "./errors";
 import { sanitizeDocumentHtml } from "./sanitize";
 
@@ -10,29 +11,8 @@ import { sanitizeDocumentHtml } from "./sanitize";
  * access rules here, so API routes stay thin and tests exercise the real logic.
  */
 
-export const MAX_TITLE_LENGTH = 200;
-export const MAX_CONTENT_BYTES = 1_000_000;
-
-export interface DocumentSummary {
-  id: string;
-  title: string;
-  updatedAt: string;
-  ownerName: string;
-  ownerEmail: string;
-  role: Role;
-}
-
-export interface DocumentDetail extends DocumentSummary {
-  contentHtml: string;
-  createdAt: string;
-}
-
-export interface ShareEntry {
-  userId: string;
-  email: string;
-  name: string;
-  role: ShareRole;
-}
+const MAX_TITLE_LENGTH = 200;
+const MAX_CONTENT_BYTES = 1_000_000;
 
 const titleSchema = z
   .string()
@@ -44,17 +24,17 @@ const contentSchema = z
   .string()
   .refine((s) => Buffer.byteLength(s, "utf8") <= MAX_CONTENT_BYTES, "Document is too large (max 1 MB).");
 
-export const createInput = z.object({
+const createInput = z.object({
   title: titleSchema.optional(),
   contentHtml: contentSchema.optional(),
 });
 
-export const updateInput = z
+const updateInput = z
   .object({ title: titleSchema.optional(), contentHtml: contentSchema.optional() })
   .refine((v) => v.title !== undefined || v.contentHtml !== undefined, "Nothing to update.");
 
-export const shareInput = z.object({
-  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+const shareInput = z.object({
+  email: z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address.")),
   role: z.enum(["viewer", "editor"]),
 });
 

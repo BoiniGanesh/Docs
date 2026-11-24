@@ -57,14 +57,21 @@ Schema and seed data are created automatically on first request (idempotent `CRE
 ## Project layout
 
 ```
-src/lib/          server logic: db.ts (schema+seed), documents.ts (service + access enforcement),
-                  access.ts (pure permission rules), importFile.ts, sanitize.ts, session.ts, http.ts
-src/app/api/      thin route handlers → service layer
-src/app/          pages: /login, / (dashboard), /documents/[id] (editor)
-src/components/   Dashboard, DocumentEditor, Toolbar, ShareDialog, UploadButton, useAutosave
-tests/            Vitest suites
-samples/          sample .md / .txt / .docx for trying import
-screenshots/      UI screenshots
+src/
+  app/              Next.js routes
+    page.tsx          / — dashboard (My documents / Shared with me)
+    login/            /login — seeded-user picker
+    documents/[id]/   /documents/:id — editor
+    api/              thin JSON route handlers → src/server
+  components/       React UI (DocumentEditor, Toolbar, ShareDialog, Dashboard, …)
+  hooks/            useAutosave — debounced save queue
+  lib/              shared by browser + server: access rules, types, fetch client
+  server/           server-only: db (schema + seed), documents (service + access
+                    enforcement), session, importFile, sanitize, errors, http
+tests/              Vitest suites
+samples/            sample .md / .txt / .docx files for trying import
+scripts/            make-sample-docx.mjs (generates samples/sample.docx)
+screenshots/        UI screenshots of each flow
 ```
 
 More detail: [ARCHITECTURE.md](ARCHITECTURE.md) · [AI_WORKFLOW.md](AI_WORKFLOW.md) · [SUBMISSION.md](SUBMISSION.md)

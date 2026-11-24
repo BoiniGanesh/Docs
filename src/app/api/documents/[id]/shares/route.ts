@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
-import { addShare, listShares, removeShare } from "@/lib/documents";
-import { handle, readJson } from "@/lib/http";
-import { requireUser } from "@/lib/session";
+import { getDb } from "@/server/db";
+import { addShare, listShares, removeShare } from "@/server/documents";
+import { handle, readJson } from "@/server/http";
+import { requireUser } from "@/server/session";
 
 type Ctx = { params: Promise<{ id: string }> };
 

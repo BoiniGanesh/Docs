@@ -1,4 +1,4 @@
-import { getDb } from "@/lib/db";
+import { getDb } from "@/server/db";
 import LoginPicker from "@/components/LoginPicker";
 
 export const dynamic = "force-dynamic";

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
-import { createDocument, listDocuments } from "@/lib/documents";
-import { handle, readJson } from "@/lib/http";
-import { requireUser } from "@/lib/session";
+import { getDb } from "@/server/db";
+import { createDocument, listDocuments } from "@/server/documents";
+import { handle, readJson } from "@/server/http";
+import { requireUser } from "@/server/session";
 
 export const GET = handle(async () => {
   const user = await requireUser();
