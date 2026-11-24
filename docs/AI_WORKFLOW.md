@@ -7,7 +7,7 @@
 
 ## How I worked with it
 
-I used the AI for execution speed and kept the decisions for myself. The loop was: ask for a plan or an audit → decide → let it implement → have it prove the result (tests, build, real-browser run) → review the evidence before moving on.
+Claude wrote most of the code under my direction; I made the decisions and verified every change. The loop was: ask for a plan or an audit → decide → let it implement → have it prove the result (tests, build, real-browser run) → review the evidence before moving on.
 
 - **Plan before code.** Claude drafted a plan with explicit scope cuts. I chose the stack and hosting from the options it laid out: Next.js + TipTap on Vercel, with Turso, because it's free for reviewers and needs zero local setup. I approved the plan only once I could defend the scope.
 - **Small, verified steps.** Each change was followed by the test suite, a type check, a production build, and a scripted browser walkthrough before it was committed.
