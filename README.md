@@ -72,7 +72,7 @@ src/
 tests/              Vitest suites
 samples/            sample .md / .txt / .docx files for trying import
 scripts/            make-sample-docx.mjs (generates samples/sample.docx)
-screenshots/        UI screenshots of each flow
+docs/               architecture note, AI workflow note, video link, screenshots
 ```
 
-More detail: [ARCHITECTURE.md](ARCHITECTURE.md) · [AI_WORKFLOW.md](AI_WORKFLOW.md) · [SUBMISSION.md](SUBMISSION.md)
+More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/AI_WORKFLOW.md](docs/AI_WORKFLOW.md) · [SUBMISSION.md](SUBMISSION.md) · [screenshots](docs/screenshots/)

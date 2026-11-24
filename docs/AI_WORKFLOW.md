@@ -3,7 +3,7 @@
 ## Tools used
 
 - **Claude Code (Claude Opus, in VS Code)** — the primary tool: planning, scaffolding, implementation, tests, and the docs drafts.
-- **Headless Chrome via Puppeteer** (scripted by the AI, run locally) — to drive the real UI and capture the screenshots in `screenshots/`.
+- **Headless Chrome via Puppeteer** (scripted by the AI, run locally) — to drive the real UI and capture the screenshots in `docs/screenshots/`.
 
 ## How I worked with it
 

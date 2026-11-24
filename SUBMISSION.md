@@ -2,7 +2,7 @@
 
 **Candidate:** Ganeshkumar Boini
 **Live URL:** _LIVE_URL_
-**Walkthrough video:** _VIDEO_URL_ (also in `VIDEO_URL.txt`)
+**Walkthrough video:** _VIDEO_URL_ (also in `docs/VIDEO_URL.txt`)
 
 ## Test accounts (no password — pick on the sign-in screen)
 
@@ -22,17 +22,18 @@
 
 | Path | Contents |
 |---|---|
+| `README.md` | Local setup, run, test, deploy instructions |
+| `SUBMISSION.md` | This file |
+| `docs/ARCHITECTURE.md` | Architecture note: priorities, decisions, tradeoffs |
+| `docs/AI_WORKFLOW.md` | AI tools used, what was changed/rejected, verification |
+| `docs/VIDEO_URL.txt` | Walkthrough video link |
+| `docs/screenshots/` | UI screenshots of every main flow |
 | `src/` | Next.js app: `app/` routes & API, `components/` + `hooks/` UI, `lib/` shared, `server/` server-only logic |
 | `tests/` | Vitest suites (24 tests) |
 | `samples/` | Sample .md / .txt / .docx files for import |
 | `scripts/make-sample-docx.mjs` | Generates the styled .docx fixture |
-| `screenshots/` | UI screenshots of every main flow |
-| `README.md` | Local setup, run, test, deploy instructions |
-| `ARCHITECTURE.md` | Architecture note: priorities, decisions, tradeoffs |
-| `AI_WORKFLOW.md` | AI tools used, what was changed/rejected, verification |
-| `SUBMISSION.md` | This file |
-| `VIDEO_URL.txt` | Walkthrough video link |
 | `.env.example` | Environment variables |
+| `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `vitest.config.ts` | Project and tooling configuration |
 
 ## What's working (end to end, locally and deployed)
 
