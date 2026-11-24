@@ -1,0 +1,6 @@
+Plain text import
+
+Each block of text separated by a blank line becomes its own paragraph.
+Single line breaks inside a paragraph are kept.
+
+Characters like <tags> & ampersands are escaped safely.
