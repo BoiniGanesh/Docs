@@ -30,7 +30,7 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS document_shares (
      document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
      user_id TEXT NOT NULL REFERENCES users(id),
-     role TEXT NOT NULL CHECK (role IN ('viewer', 'editor')),
+     role TEXT NOT NULL CHECK (role IN ('viewer', 'editor')), -- keep in sync with SHARE_ROLES (lib/access.ts)
      created_at TEXT NOT NULL,
      PRIMARY KEY (document_id, user_id)
    )`,

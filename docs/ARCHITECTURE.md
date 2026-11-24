@@ -33,6 +33,17 @@ Folders separate what runs where: `src/server/` is server-only (DB, sessions, bu
 - **No access → 404, not 403.** Non-collaborators can't tell whether a document exists. 403 is reserved for collaborators doing something their role doesn't allow (e.g. a viewer saving).
 - **Errors** are typed (`ValidationError`, `ForbiddenError`, …) and mapped to `{ error }` JSON + status in one wrapper (`http.ts`). The client surfaces those messages verbatim.
 
+## Where to change things
+
+| Change | Edit |
+|---|---|
+| Title length, upload types or size limit | `src/lib/limits.ts` (browser and server both read it). A new file type also needs its converter in `src/server/importFile.ts`, and the compiler enforces this. |
+| Permission rules or role labels | `src/lib/access.ts`. A new role also needs the `CHECK` constraint in `src/server/db.ts`. |
+| Document or sharing behavior | `src/server/documents.ts` |
+| User lookups | `src/server/users.ts` |
+| Editor features | Extensions in `src/components/DocumentEditor.tsx`, the button in `Toolbar.tsx`, and the allowed tags in `src/server/sanitize.ts` |
+| Autosave timing | `src/hooks/useAutosave.ts` |
+
 ## Data model
 
 ```

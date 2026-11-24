@@ -3,11 +3,16 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/apiClient";
+import {
+  IMPORT_EXTENSIONS,
+  IMPORT_MAX_BYTES,
+  IMPORT_MAX_LABEL,
+  IMPORT_TYPES_LABEL,
+  IMPORT_TYPES_PROSE,
+  isImportable,
+} from "@/lib/limits";
 
-const ACCEPT = ".txt,.md,.docx";
-const MAX_BYTES = 2 * 1024 * 1024;
-
-/** Imports a .txt / .md / .docx file as a new editable document, then opens it. */
+/** Imports a supported file (see lib/limits.ts) as a new editable document, then opens it. */
 export default function UploadButton({ onError }: { onError: (msg: string | null) => void }) {
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -16,12 +21,12 @@ export default function UploadButton({ onError }: { onError: (msg: string | null
   async function onFile(file: File) {
     onError(null);
     // Client-side pre-checks for fast feedback; the server re-validates everything.
-    if (!/\.(txt|md|docx)$/i.test(file.name)) {
-      onError(`"${file.name}" isn't supported. Upload a .txt, .md or .docx file.`);
+    if (!isImportable(file.name)) {
+      onError(`"${file.name}" isn't supported. Upload a ${IMPORT_TYPES_PROSE} file.`);
       return;
     }
-    if (file.size > MAX_BYTES) {
-      onError(`"${file.name}" is larger than 2 MB.`);
+    if (file.size > IMPORT_MAX_BYTES) {
+      onError(`"${file.name}" is larger than ${IMPORT_MAX_LABEL}.`);
       return;
     }
     setBusy(true);
@@ -44,7 +49,7 @@ export default function UploadButton({ onError }: { onError: (msg: string | null
       <input
         ref={input}
         type="file"
-        accept={ACCEPT}
+        accept={IMPORT_EXTENSIONS.join(",")}
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
@@ -56,7 +61,7 @@ export default function UploadButton({ onError }: { onError: (msg: string | null
         onClick={() => input.current?.click()}
         disabled={busy}
         className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium hover:bg-gray-50 disabled:opacity-60"
-        title="Supported: .txt, .md, .docx (max 2 MB)"
+        title={`Supported: ${IMPORT_TYPES_LABEL} (max ${IMPORT_MAX_LABEL})`}
       >
         {busy ? "Importing…" : "Import file"}
       </button>

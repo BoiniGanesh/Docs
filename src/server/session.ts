@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { getDb } from "./db";
 import { UnauthorizedError } from "./errors";
+import { findUserById } from "./users";
 
 /**
  * Mocked auth: the user picks a seeded account; we store their id in an
@@ -56,10 +57,7 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
   const store = await cookies();
   const userId = decodeSession(store.get(SESSION_COOKIE)?.value);
   if (!userId) return null;
-  const db = await getDb();
-  const res = await db.execute({ sql: "SELECT id, email, name FROM users WHERE id = ?", args: [userId] });
-  const row = res.rows[0];
-  return row ? { id: String(row.id), email: String(row.email), name: String(row.name) } : null;
+  return findUserById(await getDb(), userId);
 }
 
 export async function requireUser(): Promise<SessionUser> {

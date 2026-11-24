@@ -1,12 +1,11 @@
 import { getDb } from "@/server/db";
+import { listUsers } from "@/server/users";
 import LoginPicker from "@/components/LoginPicker";
 
 export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
-  const db = await getDb();
-  const res = await db.execute("SELECT id, email, name FROM users ORDER BY name");
-  const users = res.rows.map((r) => ({ id: String(r.id), email: String(r.email), name: String(r.name) }));
+  const users = await listUsers(await getDb());
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4">

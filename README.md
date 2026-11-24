@@ -66,9 +66,11 @@ src/
     api/              thin JSON route handlers → src/server
   components/       React UI (DocumentEditor, Toolbar, ShareDialog, Dashboard, …)
   hooks/            useAutosave — debounced save queue
-  lib/              shared by browser + server: access rules, types, fetch client
+  lib/              shared by browser + server: access rules + roles, limits, types,
+                    fetch client
   server/           server-only: db (schema + seed), documents (service + access
-                    enforcement), session, importFile, sanitize, errors, http
+                    enforcement), users, session, importFile, sanitize, validate,
+                    errors, http
 tests/              Vitest suites
 samples/            sample .md / .txt / .docx files for trying import
 scripts/            make-sample-docx.mjs (generates samples/sample.docx)

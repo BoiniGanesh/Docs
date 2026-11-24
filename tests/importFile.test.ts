@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { PayloadTooLargeError, UnsupportedMediaError, ValidationError } from "../src/server/errors";
-import { MAX_UPLOAD_BYTES, fileToHtml, textToHtml, titleFromFilename } from "../src/server/importFile";
+import { IMPORT_MAX_BYTES } from "../src/lib/limits";
+import { fileToHtml, textToHtml, titleFromFilename } from "../src/server/importFile";
 
 const buf = (s: string) => Buffer.from(s, "utf8");
 
@@ -33,7 +34,7 @@ describe("fileToHtml", () => {
     await expect(fileToHtml("report.pdf", buf("%PDF"))).rejects.toBeInstanceOf(UnsupportedMediaError);
     await expect(fileToHtml("noext", buf("x"))).rejects.toBeInstanceOf(UnsupportedMediaError);
     await expect(fileToHtml("empty.txt", buf(""))).rejects.toBeInstanceOf(ValidationError);
-    await expect(fileToHtml("big.txt", Buffer.alloc(MAX_UPLOAD_BYTES + 1, 97))).rejects.toBeInstanceOf(
+    await expect(fileToHtml("big.txt", Buffer.alloc(IMPORT_MAX_BYTES + 1, 97))).rejects.toBeInstanceOf(
       PayloadTooLargeError,
     );
   });

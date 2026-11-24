@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/apiClient";
-import type { ShareRole } from "@/lib/access";
+import { ROLE_LABELS, SHARE_ROLES, type ShareRole } from "@/lib/access";
 import type { ShareEntry } from "@/lib/types";
 import Avatar from "./Avatar";
 
@@ -17,7 +17,7 @@ interface Props {
 export default function ShareDialog({ docId, docTitle, owner, canManage, onClose }: Props) {
   const [shares, setShares] = useState<ShareEntry[] | null>(null);
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<ShareRole>("editor");
+  const [role, setRole] = useState<ShareRole>(SHARE_ROLES[0]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<{ email: string; name: string }[]>([]);
@@ -95,8 +95,7 @@ export default function ShareDialog({ docId, docTitle, owner, canManage, onClose
               className="rounded-lg border border-gray-300 px-2 text-sm"
               aria-label="Access level"
             >
-              <option value="editor">Editor</option>
-              <option value="viewer">Viewer</option>
+              <RoleOptions />
             </select>
             <button disabled={busy || !email.trim()} className="rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
               Share
@@ -115,7 +114,7 @@ export default function ShareDialog({ docId, docTitle, owner, canManage, onClose
               <span className="block truncate text-sm font-medium">{owner.name}</span>
               <span className="block truncate text-xs text-gray-500">{owner.email}</span>
             </span>
-            <span className="text-sm text-gray-500">Owner</span>
+            <span className="text-sm text-gray-500">{ROLE_LABELS.owner.name}</span>
           </li>
           {shares === null && !error && <li className="text-sm text-gray-500 py-2">Loading…</li>}
           {shares?.map((s) => (
@@ -134,8 +133,7 @@ export default function ShareDialog({ docId, docTitle, owner, canManage, onClose
                     className="rounded-md border border-gray-200 px-1 py-0.5 text-sm"
                     aria-label={`Access level for ${s.name}`}
                   >
-                    <option value="editor">Editor</option>
-                    <option value="viewer">Viewer</option>
+                    <RoleOptions />
                   </select>
                   <button
                     disabled={busy}
@@ -147,7 +145,7 @@ export default function ShareDialog({ docId, docTitle, owner, canManage, onClose
                   </button>
                 </>
               ) : (
-                <span className="text-sm text-gray-500 capitalize">{s.role}</span>
+                <span className="text-sm text-gray-500">{ROLE_LABELS[s.role].name}</span>
               )}
             </li>
           ))}
@@ -160,5 +158,18 @@ export default function ShareDialog({ docId, docTitle, owner, canManage, onClose
         </div>
       </div>
     </div>
+  );
+}
+
+/** One <option> per grantable role, labelled from lib/access.ts. */
+function RoleOptions() {
+  return (
+    <>
+      {SHARE_ROLES.map((r) => (
+        <option key={r} value={r}>
+          {ROLE_LABELS[r].name}
+        </option>
+      ))}
+    </>
   );
 }

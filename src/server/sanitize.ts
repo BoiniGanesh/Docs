@@ -1,7 +1,8 @@
 import sanitizeHtml from "sanitize-html";
 
 /**
- * Allowlist mirrors what the editor can produce (TipTap StarterKit + Underline).
+ * Allowlist mirrors what the editor can produce (extensions in components/DocumentEditor.tsx).
+ * Adding an editor feature (links, images, tables…) means allowing its tags here too.
  * Applied on every write, so stored HTML is always safe to render.
  */
 export function sanitizeDocumentHtml(html: string): string {

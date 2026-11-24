@@ -1,24 +1,26 @@
 import type { Client, Row } from "@libsql/client";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { canDelete, canEdit, canShare, resolveRole, type Role, type ShareRole } from "@/lib/access";
+import { SHARE_ROLES, canDelete, canEdit, canShare, resolveRole, type Role, type ShareRole } from "@/lib/access";
+import { TITLE_MAX_LENGTH } from "@/lib/limits";
 import type { DocumentDetail, DocumentSummary, ShareEntry } from "@/lib/types";
 import { ForbiddenError, NotFoundError, ValidationError } from "./errors";
 import { sanitizeDocumentHtml } from "./sanitize";
+import { findUserByEmail } from "./users";
+import { parse } from "./validate";
 
 /**
  * Document service layer. Every function takes the acting user's id and enforces
  * access rules here, so API routes stay thin and tests exercise the real logic.
  */
 
-const MAX_TITLE_LENGTH = 200;
 const MAX_CONTENT_BYTES = 1_000_000;
 
 const titleSchema = z
   .string()
   .trim()
   .min(1, "Title can't be empty.")
-  .max(MAX_TITLE_LENGTH, `Title must be ${MAX_TITLE_LENGTH} characters or fewer.`);
+  .max(TITLE_MAX_LENGTH, `Title must be ${TITLE_MAX_LENGTH} characters or fewer.`);
 
 const contentSchema = z
   .string()
@@ -35,16 +37,8 @@ const updateInput = z
 
 const shareInput = z.object({
   email: z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address.")),
-  role: z.enum(["viewer", "editor"]),
+  role: z.enum(SHARE_ROLES, { error: `Role must be one of: ${SHARE_ROLES.join(", ")}.` }),
 });
-
-export function parse<T>(schema: z.ZodType<T>, data: unknown): T {
-  const result = schema.safeParse(data);
-  if (!result.success) {
-    throw new ValidationError(result.error.issues[0]?.message ?? "Invalid input.");
-  }
-  return result.data;
-}
 
 const SELECT_WITH_ROLE = `
   SELECT d.id, d.title, d.content_html, d.created_at, d.updated_at, d.owner_id,
@@ -172,15 +166,14 @@ export async function addShare(db: Client, userId: string, docId: string, input:
   const { row, role: callerRole } = await loadWithRole(db, userId, docId);
   if (!canShare(callerRole)) throw new ForbiddenError("Only the owner can share this document.");
 
-  const target = await db.execute({ sql: "SELECT id FROM users WHERE email = ?", args: [email] });
-  const targetId = target.rows[0]?.id;
-  if (!targetId) throw new ValidationError(`No user found with email ${email}.`);
-  if (String(targetId) === String(row.owner_id)) throw new ValidationError("You already own this document.");
+  const target = await findUserByEmail(db, email);
+  if (!target) throw new ValidationError(`No user found with email ${email}.`);
+  if (target.id === String(row.owner_id)) throw new ValidationError("You already own this document.");
 
   await db.execute({
     sql: `INSERT INTO document_shares (document_id, user_id, role, created_at) VALUES (?, ?, ?, ?)
           ON CONFLICT (document_id, user_id) DO UPDATE SET role = excluded.role`,
-    args: [docId, String(targetId), role, new Date().toISOString()],
+    args: [docId, target.id, role, new Date().toISOString()],
   });
   return listShares(db, userId, docId);
 }

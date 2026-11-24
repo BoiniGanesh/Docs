@@ -8,6 +8,7 @@ import TurndownService from "turndown";
 import { useEffect, useRef, useState } from "react";
 import type { DocumentDetail } from "@/lib/types";
 import { canEdit, canShare } from "@/lib/access";
+import { TITLE_MAX_LENGTH } from "@/lib/limits";
 import AppHeader from "./AppHeader";
 import RoleBadge from "./RoleBadge";
 import ShareDialog from "./ShareDialog";
@@ -79,8 +80,8 @@ export default function DocumentEditor({ doc, user, isNew = false }: Props) {
       setTitleError("Title can't be empty.");
       return;
     }
-    if (trimmed.length > 200) {
-      setTitleError("Title must be 200 characters or fewer.");
+    if (trimmed.length > TITLE_MAX_LENGTH) {
+      setTitleError(`Title must be ${TITLE_MAX_LENGTH} characters or fewer.`);
       return;
     }
     setTitleError(null);

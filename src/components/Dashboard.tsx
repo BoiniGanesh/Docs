@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/apiClient";
+import { IMPORT_MAX_LABEL, IMPORT_TYPES_PROSE } from "@/lib/limits";
 import type { DocumentSummary } from "@/lib/types";
 import UploadButton from "./UploadButton";
 import RoleBadge from "./RoleBadge";
@@ -77,7 +78,7 @@ export default function Dashboard({
           {creating ? "Creating…" : "+ New document"}
         </button>
       </div>
-      <p className="text-xs text-gray-500 mb-6 text-right">Import supports .txt, .md and .docx files up to 2 MB.</p>
+      <p className="text-xs text-gray-500 mb-6 text-right">Import supports {IMPORT_TYPES_PROSE} files up to {IMPORT_MAX_LABEL}.</p>
 
       <div className="relative mb-6">
         <svg aria-hidden viewBox="0 0 24 24" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
