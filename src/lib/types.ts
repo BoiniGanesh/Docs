@@ -9,6 +9,8 @@ export interface DocumentSummary {
   ownerName: string;
   ownerEmail: string;
   role: Role;
+  /** Number of people (besides the owner) with access. */
+  shareCount: number;
 }
 
 export interface DocumentDetail extends DocumentSummary {

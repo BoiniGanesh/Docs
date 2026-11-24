@@ -48,7 +48,8 @@ export function parse<T>(schema: z.ZodType<T>, data: unknown): T {
 
 const SELECT_WITH_ROLE = `
   SELECT d.id, d.title, d.content_html, d.created_at, d.updated_at, d.owner_id,
-         u.name AS owner_name, u.email AS owner_email, s.role AS share_role
+         u.name AS owner_name, u.email AS owner_email, s.role AS share_role,
+         (SELECT COUNT(*) FROM document_shares sc WHERE sc.document_id = d.id) AS share_count
   FROM documents d
   JOIN users u ON u.id = d.owner_id
   LEFT JOIN document_shares s ON s.document_id = d.id AND s.user_id = ?`;
@@ -61,6 +62,7 @@ function toSummary(row: Row, role: Role): DocumentSummary {
     ownerName: String(row.owner_name),
     ownerEmail: String(row.owner_email),
     role,
+    shareCount: Number(row.share_count),
   };
 }
 

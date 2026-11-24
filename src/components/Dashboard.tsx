@@ -23,7 +23,11 @@ export default function Dashboard({
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const owned = ownedFromServer.filter((d) => !deletedIds.has(d.id));
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const matches = (d: DocumentSummary) => !q || d.title.toLowerCase().includes(q);
+  const owned = ownedFromServer.filter((d) => !deletedIds.has(d.id) && matches(d));
+  const sharedVisible = shared.filter(matches);
 
   // Browser Back restores this page from Next's client cache; re-fetch so
   // titles and "edited" times reflect changes made in the editor.
@@ -34,7 +38,7 @@ export default function Dashboard({
     setError(null);
     try {
       const { document } = await api<{ document: { id: string } }>("/api/documents", { method: "POST", json: {} });
-      router.push(`/documents/${document.id}`);
+      router.push(`/documents/${document.id}?new=1`); // editor focuses the title for renaming
     } catch (e) {
       setError((e as Error).message);
       setCreating(false);
@@ -75,6 +79,21 @@ export default function Dashboard({
       </div>
       <p className="text-xs text-gray-500 mb-6 text-right">Import supports .txt, .md and .docx files up to 2 MB.</p>
 
+      <div className="relative mb-6">
+        <svg aria-hidden viewBox="0 0 24 24" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search documents by title"
+          aria-label="Search documents by title"
+          className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none"
+        />
+      </div>
+
       {error && (
         <div role="alert" className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 flex justify-between gap-4">
           <span>{error}</span>
@@ -82,9 +101,27 @@ export default function Dashboard({
         </div>
       )}
 
-      <Section title="My documents" count={owned.length} empty="No documents yet. Create one or import a file to get started.">
+      <Section
+        title="My documents"
+        count={owned.length}
+        empty={q ? `No documents match "${query.trim()}".` : "No documents yet. Create one or import a file to get started."}
+      >
         {owned.map((d) => (
           <DocRow key={d.id} doc={d} subtitle={`Edited ${formatDate(d.updatedAt)}`}>
+            {d.shareCount > 0 ? (
+              <span
+                className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 whitespace-nowrap"
+                title={`Shared with ${d.shareCount} ${d.shareCount === 1 ? "person" : "people"}`}
+              >
+                <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="9" cy="8" r="3.5" />
+                  <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6" />
+                </svg>
+                Shared with {d.shareCount}
+              </span>
+            ) : (
+              <span className="text-xs text-gray-400 whitespace-nowrap">Only you</span>
+            )}
             <button
               onClick={() => deleteDoc(d)}
               className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-red-50 hover:text-red-700"
@@ -96,8 +133,12 @@ export default function Dashboard({
         ))}
       </Section>
 
-      <Section title="Shared with me" count={shared.length} empty="Nothing has been shared with you yet.">
-        {shared.map((d) => (
+      <Section
+        title="Shared with me"
+        count={sharedVisible.length}
+        empty={q ? `No shared documents match "${query.trim()}".` : "Nothing has been shared with you yet."}
+      >
+        {sharedVisible.map((d) => (
           <DocRow key={d.id} doc={d} subtitle={`Owned by ${d.ownerName} · Edited ${formatDate(d.updatedAt)}`}>
             <RoleBadge role={d.role} />
           </DocRow>

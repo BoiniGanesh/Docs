@@ -42,6 +42,7 @@ describe("document lifecycle and sharing", () => {
     docId = doc.id;
     expect(doc.title).toBe("Q3 plan");
     expect(doc.role).toBe("owner");
+    expect(doc.shareCount).toBe(0);
 
     const updated = await updateDocument(db, ALICE, docId, {
       title: "Q3 roadmap",
@@ -85,7 +86,7 @@ describe("document lifecycle and sharing", () => {
   it("separates owned and shared documents in listings", async () => {
     const alice = await listDocuments(db, ALICE);
     const bob = await listDocuments(db, BOB);
-    expect(alice.owned.map((d) => d.id)).toContain(docId);
+    expect(alice.owned.find((d) => d.id === docId)?.shareCount).toBe(1);
     expect(alice.shared.map((d) => d.id)).not.toContain(docId);
     expect(bob.shared.find((d) => d.id === docId)?.role).toBe("viewer");
     expect(bob.owned.map((d) => d.id)).not.toContain(docId);
@@ -122,6 +123,7 @@ describe("document lifecycle and sharing", () => {
 
   it("revokes access when a share is removed", async () => {
     expect(await removeShare(db, ALICE, docId, BOB)).toEqual([]);
+    expect((await getDocument(db, ALICE, docId)).shareCount).toBe(0);
     await expect(getDocument(db, BOB, docId)).rejects.toBeInstanceOf(NotFoundError);
   });
 

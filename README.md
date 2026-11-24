@@ -12,7 +12,8 @@ A lightweight collaborative document editor: create, format, import, share, and 
 
 ## Features
 
-- **Documents** — create, rename (click the title), edit, delete (owner only). Autosaves ~0.8 s after you stop typing, with *Saving… / All changes saved / Couldn't save — Retry* status.
+- **Documents** — create (the title is pre-selected so you can name it right away), rename (click the title), edit, delete (owner only). Autosaves ~0.8 s after you stop typing — or immediately with **⌘/Ctrl+S** — with *Saving… / All changes saved / Couldn't save — Retry* status. Live word count.
+- **Dashboard** — search documents by title; owned documents show **Shared with N** or **Only you**.
 - **Rich text** — bold, italic, underline, strikethrough, Heading 1–3, bulleted and numbered lists, quotes, undo/redo, standard keyboard shortcuts.
 - **File import** — **Import file** on the dashboard turns a **.txt, .md or .docx** file (max 2 MB) into a new editable document. Other types are rejected with a clear message. Sample files are in [`samples/`](samples/).
 - **Sharing** — the owner shares by email as **Editor** or **Viewer**, can change roles or revoke access. Dashboard separates **My documents** from **Shared with me** with role badges. Viewers get a read-only editor with a banner. Users without access get a 404 (existence isn't leaked).

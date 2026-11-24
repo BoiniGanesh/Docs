@@ -54,11 +54,11 @@ Ownership is a column, not a share row, so a document always has exactly one own
 
 ## Deliberately out of scope
 
-Real-time collaboration and presence · real auth/passwords/sign-up · comments/suggestions · version history · attachments and images · PDF export · pagination/search on the dashboard · optimistic-concurrency conflict detection.
+Real-time collaboration and presence · real auth/passwords/sign-up · comments/suggestions · version history · attachments and images · PDF export · dashboard pagination / full-text search (title search is client-side) · optimistic-concurrency conflict detection.
 
 ## What I'd build next (2–4 hours)
 
 1. **Conflict safety:** send `updatedAt` with each save and reject stale writes (409) with a "this document changed — reload/merge" prompt. Cheap and removes silent overwrites.
 2. **Version history:** snapshot `content_html` on save (throttled), list/restore in a side panel.
 3. **Presence indicator:** lightweight polling ("Bob is viewing") as a step toward real-time.
-4. **E2E tests** (Playwright) for the sharing flow in CI, plus a dashboard search box.
+4. **E2E tests** (Playwright) for the sharing flow in CI.

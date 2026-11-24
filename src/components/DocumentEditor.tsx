@@ -5,7 +5,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import TurndownService from "turndown";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { DocumentDetail } from "@/lib/types";
 import { canEdit, canShare } from "@/lib/access";
 import AppHeader from "./AppHeader";
@@ -21,12 +21,44 @@ const STATUS_TEXT: Record<SaveStatus, string> = {
   error: "Couldn't save",
 };
 
-export default function DocumentEditor({ doc, user }: { doc: DocumentDetail; user: { name: string; email: string } }) {
+function countWords(text: string): number {
+  const trimmed = text.trim();
+  return trimmed ? trimmed.split(/\s+/).length : 0;
+}
+
+interface Props {
+  doc: DocumentDetail;
+  user: { name: string; email: string };
+  /** Just created from the dashboard: focus the title so the user can name it. */
+  isNew?: boolean;
+}
+
+export default function DocumentEditor({ doc, user, isNew = false }: Props) {
   const editable = canEdit(doc.role);
   const [title, setTitle] = useState(doc.title);
   const [titleError, setTitleError] = useState<string | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const titleInput = useRef<HTMLInputElement>(null);
   const { status, error, queue, flush } = useAutosave(doc.id);
+
+  // New document: select the placeholder title, and drop ?new=1 so a refresh doesn't re-trigger.
+  useEffect(() => {
+    if (!isNew || !editable) return;
+    titleInput.current?.select();
+    window.history.replaceState(null, "", window.location.pathname);
+  }, [isNew, editable]);
+
+  // Cmd/Ctrl+S saves immediately instead of opening the browser's "Save page" dialog.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (editable) void flush();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [editable, flush]);
 
   const editor = useEditor({
     extensions: [
@@ -64,12 +96,15 @@ export default function DocumentEditor({ doc, user }: { doc: DocumentDetail; use
     URL.revokeObjectURL(url);
   }
 
+  const wordCount = editor ? countWords(editor.getText()) : 0; // editor re-renders on each change
+
   return (
     <>
       <AppHeader user={user}>
         <div className="flex items-center gap-3 min-w-0">
           <div className="min-w-0 flex-1 max-w-md">
             <input
+              ref={titleInput}
               value={title}
               onChange={(e) => onTitleChange(e.target.value)}
               onBlur={() => {
@@ -130,9 +165,16 @@ export default function DocumentEditor({ doc, user }: { doc: DocumentDetail; use
         <article className="doc-content min-h-[70vh] rounded-lg border border-gray-200 bg-white px-8 py-10 shadow-sm sm:px-16">
           {editor ? <EditorContent editor={editor} /> : <div className="text-gray-400">Loading editor…</div>}
         </article>
-        <p className="mt-3 text-xs text-gray-400">
-          Owned by {doc.ownerName}. Saving is automatic; if two people edit at once, the last save wins.
-        </p>
+        <div className="mt-3 flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs text-gray-400">
+          <span>
+            Owned by {doc.ownerName}. Saving is automatic (or press ⌘/Ctrl+S); if two people edit at once, the last save wins.
+          </span>
+          {editor && (
+            <span aria-live="polite" className="whitespace-nowrap">
+              {wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}
+            </span>
+          )}
+        </div>
       </div>
 
       {shareOpen && (

@@ -36,7 +36,8 @@
 
 ## What's working (end to end, locally and deployed)
 
-- Create, rename, edit, autosave, reopen and delete documents.
+- Create, rename, edit, autosave (or save now with ⌘/Ctrl+S), reopen and delete documents. Live word count.
+- Dashboard search by title. Owned documents show "Shared with N" or "Only you".
 - Rich text: bold, italic, underline, strikethrough, H1–H3, bulleted and numbered lists, quotes, undo/redo.
 - Import .txt, .md and .docx (max 2 MB) as new documents, with clear errors for unsupported, empty, oversized or corrupt files.
 - Sharing by email with Viewer or Editor roles, role changes and revocation.
@@ -58,4 +59,4 @@
 1. Stale-write detection (`updatedAt` check returning 409, with a reload/merge prompt).
 2. Version history with restore.
 3. A presence indicator ("Bob is viewing").
-4. Playwright end-to-end tests in CI, and dashboard search.
+4. Playwright end-to-end tests in CI.
