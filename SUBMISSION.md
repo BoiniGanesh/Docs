@@ -2,7 +2,7 @@
 
 **Candidate:** Ganeshkumar Boini
 **Live URL:** https://ajaiadocs-olive.vercel.app
-**Walkthrough video:** _VIDEO_URL_ (also in `docs/VIDEO_URL.txt`)
+**Walkthrough video:** https://www.loom.com/share/16466f26deb642f8b511328ae2a7980e (also in `docs/VIDEO_URL.txt`)
 
 ## Test accounts (no password — pick on the sign-in screen)
 
